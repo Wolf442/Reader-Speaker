@@ -1,14 +1,16 @@
 import pyttsx3 as tts 
 
 class Speaker(object):
-    def __init__(self, return_function):
+    
+    def __init__(self, return_function=None):
         self.engine = tts.init()
         if return_function != None:
             self.engine.connect('started-word', return_function)
-
+        self.engine.say('ativando')
+        self.engine.runAndWait()
 #speacker
     def speak(self, text_to_read):
-        self.engine.say(' ')
+        
         self.engine.say(text_to_read)
         self.engine.startLoop(False)
         self.engine.iterate()
