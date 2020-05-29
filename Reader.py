@@ -10,6 +10,9 @@ main_font = ('helvetica', '11')
 class WindowProperties:
    
     def __init__(self, window):
+    #var
+        self.engine = tts.Speaker()
+        list_voices = self.engine.all_voice()
     #windows_top
         self.Frame_top = Frame(window, bg=bg_color, width=590, height=60,highlightbackground=main_color, highlightthickness=1)
         self.frame_top_voices = Frame(self.Frame_top, bg=bg_color)
@@ -19,7 +22,7 @@ class WindowProperties:
     #windos top Widget
         self.label_voice = Label(self.frame_top_voices, text='Selecione as vozes', font=main_font, bg=bg_color, fg = main_color)
         self.VoicesCombox = Combobox(self.frame_top_voices, font = main_font, background=bg_color, foreground=main_color, width = 45)
-        self.VoicesCombox['values'] = (1,3,4,5)
+        self.VoicesCombox['values'] = [i for i in list_voices.keys()]
         
         self.label_volume_text = Label(self.frame_vol, text='Volume', font = main_font, bg= bg_color, fg = main_color)
         self.label_rate_text = Label(self.frame_rate, text= 'Velocidade', font = main_font, bg = bg_color, fg = main_color)
@@ -59,9 +62,9 @@ class WindowProperties:
         
         self.textbox = scrolledtext.ScrolledText(self.frame_down_text, width=60, height=14, font ='helvetica', bg=bg_color, fg = main_color)
         
-        self.buton_Read = Button(self.frame_down_button, text = 'Ler', font= main_font, bg= bg_color, fg= main_color, width= 10)
+        self.buton_Read = Button(self.frame_down_button, text = 'Ler', font= main_font, bg= bg_color, fg= main_color, width= 10, command = self.ReadText)
         self.button_paste = Button(self.frame_down_button, text = 'Colar', font= main_font, bg= bg_color, fg= main_color, width= 10)
-        self.button_pausePlay = Button(self.frame_down_button, text = 'Pause', font= main_font, bg= bg_color, fg= main_color, width= 10)
+        self.button_pausePlay = Button(self.frame_down_button, text = 'Pause', font= main_font, bg= bg_color, fg= main_color, width= 10, command = self.cont_pause)
     #pack down
 
         self.frame_down.pack()
@@ -71,6 +74,12 @@ class WindowProperties:
         self.buton_Read.pack(side= LEFT)
         self.button_paste.pack(side=LEFT, padx = 123)
         self.button_pausePlay.pack()
+    
+    def cont_pause(self):
+        pass
+
+    def ReadText(self):
+        self.engine.speak(self.textbox.get(1.0,END))
 
 root = Tk()
 root.geometry('600x440+400+150')
