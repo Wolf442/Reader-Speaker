@@ -30,10 +30,10 @@ class WindowProperties:
         self.label_indice1 = Label(self.frame_vol, font = main_font, bg = 'white', fg = main_color, text = 0, width =6)
         self.label_indice2 = Label(self.frame_rate, font = main_font, bg = 'white', fg = main_color, text = 0, width = 6)
 
-        self.vol_button_plus = Button(self.frame_vol, text = '+', font= main_font, bg = bg_color, fg = main_color, width= 6)
-        self.vol_button_minus = Button(self.frame_vol, text = '-', font= main_font, bg = bg_color, fg= main_color, width= 6)
-        self.rate_button_plus = Button(self.frame_rate, text = '+', font= main_font, bg= bg_color, fg=main_color, width= 6)
-        self.rate_button_minus = Button(self.frame_rate, text = '-', font= main_font, bg= bg_color, fg= main_color, width= 6)
+        self.vol_button_plus = Button(self.frame_vol, text = '+', font= main_font, bg = bg_color, fg = main_color, width= 6, command = self.volume_plus )
+        self.vol_button_minus = Button(self.frame_vol, text = '-', font= main_font, bg = bg_color, fg= main_color, width= 6, command = self.volume_minus)
+        self.rate_button_plus = Button(self.frame_rate, text = '+', font= main_font, bg= bg_color, fg=main_color, width= 6, command = self.rate_plus)
+        self.rate_button_minus = Button(self.frame_rate, text = '-', font= main_font, bg= bg_color, fg= main_color, width= 6, command = self.rate_minus)
 
     #pack top widget
         self.Frame_top.pack(pady= 5)
@@ -75,11 +75,41 @@ class WindowProperties:
         self.button_paste.pack(side=LEFT, padx = 123)
         self.button_pausePlay.pack()
     
+
     def cont_pause(self):
         pass
 
     def ReadText(self):
         self.engine.speak(self.textbox.get(1.0,END))
+
+    def volume_plus(self):
+        self.volume_value('+')
+    def volume_minus(self):
+        self.volume_value('-')
+
+    def volume_value(self, control='-'):
+        volume_indice = int(self.label_indice1['text'])
+        if control == '-' and volume_indice != 0 :
+            self.label_indice1['text'] = str(volume_indice - 1)
+            self.engine.set_volume(int(self.label_indice1['text']))
+        elif control == '+' and volume_indice != 100:
+            self.label_indice1['text'] = str(volume_indice + 1)
+            self.engine.set_volume(int(self.label_indice1['text']))
+
+    def rate_plus(self):
+        self.rate_value('+')
+    def rate_minus(self):
+        self.rate_value('-')
+
+    def rate_value(self, control = '-'):
+        volume_indice = int(self.label_indice2['text'])
+        if control == '-' and volume_indice != 0 :
+            self.label_indice2['text'] = str(volume_indice - 25)
+            self.engine.set_rate(int(self.label_indice2['text']))
+        
+        elif control == '+' and volume_indice != 300:
+            self.label_indice2['text'] = str(volume_indice + 25)
+            self.engine.set_rate(int(self.label_indice2['text']))
 
 root = Tk()
 root.geometry('600x440+400+150')
