@@ -3,6 +3,7 @@ import shelve
 from tkinter import *
 from tkinter.ttk import Combobox
 from tkinter import scrolledtext
+from tkinter import messagebox
 
 bg_color = 'gray22'
 main_color = 'deepskyblue2'
@@ -13,14 +14,18 @@ class WindowProperties:
     def __init__(self, window):
     #var
         config = self._login()
-        self.engine = tts.Speaker()
+        self.engine = tts.Speaker(self.speech_return)
         self.list_voices = self.engine.all_voice()
+        self.reading_companion = {'text':'', 'readed': ''}
+        self.pause_control = False
+
     #windows_top
         self.Frame_top = Frame(window, bg=bg_color, width=590, height=60,highlightbackground=main_color, highlightthickness=1)
         self.frame_top_voices = Frame(self.Frame_top, bg=bg_color)
         self.frame_top_volRate = Frame(self.Frame_top, bg=bg_color)
         self.frame_vol = Frame(self.frame_top_volRate, bg = bg_color)
         self.frame_rate = Frame(self.frame_top_volRate, bg = bg_color)
+    
     #windos top Widget
         self.label_voice = Label(self.frame_top_voices, text='Selecione as vozes', font=main_font, bg=bg_color, fg = main_color)
         self.VoicesCombox = Combobox(self.frame_top_voices, font = main_font, background=bg_color, foreground=main_color, width = 45)
@@ -80,13 +85,26 @@ class WindowProperties:
     
 
     def cont_pause(self):
-        pass
-
+        
+        if self.pause_control:
+            self.button_pausePlay['text'] = 'Pause'
+            self.pause_control = False
+            self.engine.speak(self.reading_companion['text'])
+        
+        else:
+            self.engine.stop()
+            self.button_pausePlay['text'] = 'Continue'
+            self.pause_control = True
+        
+    
     def ReadText(self):
        self._save()
+       #define voice
        self.engine.set_voice(self.list_voices[self.VoicesCombox.get()])
-       self.engine.speak(self.textbox.get(1.0,END))
-            
+       #read
+       self.reading_companion['text'] = self.textbox.get(1.0,END)
+       self.engine.speak(self.reading_companion['text'])
+       self.reading_companion['readed'] = ''     
     #vol define
     def volume_plus(self):
         self.volume_value('+')
@@ -144,6 +162,28 @@ class WindowProperties:
             dic['vol'] = '100'
             dic['rate'] = '150'
         return dic
+
+    def speech_return(self, name, location, length):
+        wordsText = self.reading_companion['text']
+        wordsRead = self.reading_companion['readed']
+        
+        wordsText = wordsText.split()
+        wordsRead = wordsRead.split()
+
+        wordsRead.append(wordsText[0])
+        del(wordsText[0])
+
+        wordsText= ' '.join(wordsText)
+        wordsRead= ' '.join(wordsRead)
+
+        self.textbox.delete(1.0, END)
+        self.textbox.insert(END, wordsRead+' ', 'lido')  # <-- tagging `name`
+        self.textbox.insert(END, wordsText, 'lera')  # <-- tagging `time`
+        self.textbox.tag_config('lido', foreground = 'black', background = 'white')  # <-- Change colors of texts tagged `name`
+        self.textbox.tag_config('lera', foreground = main_color) 
+
+        self.reading_companion['text'] = wordsText
+        self.reading_companion['readed'] = wordsRead
 
 root = Tk()
 root.geometry('600x440+400+150')

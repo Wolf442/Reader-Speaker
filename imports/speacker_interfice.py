@@ -4,16 +4,19 @@ class Speaker(object):
     
     def __init__(self, return_function=None):
         self.engine = tts.init()
-        if return_function != None:
+        if not return_function == None:
             self.engine.connect('started-word', return_function)
         
-#speacker
+#comands
     def speak(self, text_to_read):
         self.engine.say(' ')
         self.engine.say(text_to_read)
         self.engine.startLoop(False)
         self.engine.iterate()
         self.engine.endLoop()
+    
+    def stop(self):
+        self.speak(' ')
 
 #define voice properties
     def set_voice(self, voice_id):
