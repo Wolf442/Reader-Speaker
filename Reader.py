@@ -20,7 +20,7 @@ class WindowProperties:
         self.pause_control = False
 
     #windows_top
-        self.Frame_top = Frame(window, bg=bg_color, width=590, height=60,highlightbackground=main_color, highlightthickness=1)
+        self.Frame_top = Frame(window, bg=bg_color, width=590, height=60, highlightbackground=main_color, highlightthickness=3)
         self.frame_top_voices = Frame(self.Frame_top, bg=bg_color)
         self.frame_top_volRate = Frame(self.Frame_top, bg=bg_color)
         self.frame_vol = Frame(self.frame_top_volRate, bg = bg_color)
@@ -64,14 +64,15 @@ class WindowProperties:
         self.rate_button_minus.pack()
     
     #windows down
-        self.frame_down = Frame(window, bg=bg_color, width=590, height=71, highlightbackground=main_color, highlightthickness=1)
+        self.frame_down = Frame(window, bg=bg_color, width=590, height=71, highlightbackground=main_color, highlightthickness=3
+        )
         self.frame_down_text = Frame(self.frame_down, bg = bg_color)
         self.frame_down_button = Frame(self.frame_down, bg = bg_color)
         
         self.textbox = scrolledtext.ScrolledText(self.frame_down_text, width=60, height=14, font ='helvetica', bg=bg_color, fg = main_color)
         
         self.buton_Read = Button(self.frame_down_button, text = 'Ler', font= main_font, bg= bg_color, fg= main_color, width= 10, command = self.ReadText)
-        self.button_paste = Button(self.frame_down_button, text = 'Colar', font= main_font, bg= bg_color, fg= main_color, width= 10)
+        self.button_paste = Button(self.frame_down_button, text = 'Colar', font= main_font, bg= bg_color, fg= main_color, width= 10, command = self.past_clipboard)
         self.button_pausePlay = Button(self.frame_down_button, text = 'Pause', font= main_font, bg= bg_color, fg= main_color, width= 10, command = self.cont_pause)
     #pack down
 
@@ -143,6 +144,11 @@ class WindowProperties:
             if i == self.VoicesCombox.get():
                 return numero
             numero += 1
+
+    def past_clipboard(self):
+        #print(root.clipboard_get())
+         self.textbox.delete(1.0, END)
+         self.textbox.insert(END, root.clipboard_get())
 
     def _save(self):
         with shelve.open('config') as db:
